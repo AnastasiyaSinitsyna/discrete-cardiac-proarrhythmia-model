@@ -63,14 +63,14 @@ Both meshes include 10% randomly selected elements with 10-fold reduced intracel
 
 Each subfolder contains the openCARP parameter file (`.par`) for one of the six experimental conditions:
 
-| Condition    | Concentration (µM) | G_Na block | G_Kr block | G_CaL block |     |
-| ------------ | ------------------ | ---------- | ---------- | ----------- | --- |
-| Control      | 0                  | 0          | 0          | 0           |     |
-| Mitoxantrone | 7.87               | 0.014      | 0.069      | 0.34        |     |
-| Dasatinib    | 5.12               | 0.053      | 0.27       | 0.11        |     |
-| Sunitinib    | 0.47               | 0.013      | 0.28       | 0.0095      |     |
-| Nilotinib    | 0.40               | 0.00054    | 0.29       | 0.022       |     |
-| Erythromycin | 10.0               | 0          | 0.33       | 0           |     |
+| Condition    | Concentration (µM) | G_Na block | G_Kr block | G_CaL block |     
+| ------------ | ------------------ | ---------- | ---------- | ----------- | 
+| Control      | 0                  | 0          | 0          | 0           |     
+| Mitoxantrone | 7.87               | 0.014      | 0.069      | 0.34        |     
+| Dasatinib    | 5.12               | 0.053      | 0.27       | 0.11        |     
+| Sunitinib    | 0.47               | 0.013      | 0.28       | 0.0095      |     
+| Nilotinib    | 0.40               | 0.00054    | 0.29       | 0.022       |     
+| Erythromycin | 10.0               | 0          | 0.33       | 0           |     
 
 Ion channel blockade was implemented using the pore-block model based on IC₅₀ and Hill coefficient data from [Passini et al., 2017](https://doi.org/10.3389/fphys.2017.00668). Maximum conductances (G_Na, G_Kr, G_CaL) in the Kernik hiPSC-CM model were scaled by the factor (1 − f_block).
 
