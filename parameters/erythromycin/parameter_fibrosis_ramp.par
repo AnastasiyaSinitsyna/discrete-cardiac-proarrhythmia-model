@@ -1,0 +1,86 @@
+#=======================================================>>
+## parameter.par ##
+simID                    = erythromycin_monolayer_diffuse_fibrosis
+meshname                 = monolayer_diffuse_fibrosis
+
+num_external_imp=1
+external_imp = /discrete-cardiac-proarrhythmia-model/kernik_2019.so
+
+num_phys_regions         = 1
+phys_region[0].ptype     = 0
+phys_region[0].num_IDs   = 4
+phys_region[0].ID        = 0 1 2 3
+
+dt                       = 50
+timedt                   = 0.1
+spacedt                  = 10
+tend                     = 20000
+#sentinel_ID             = 0
+experiment               = 0
+parab_solve              = 1
+mass_lumping             = 0
+bidm_eqv_mono            = 0
+
+num_imp_regions          = 3
+
+# Na * 1 , Kr - 0.68 , CaL - 1
+# Cardiomyocites 0 (in fibrosis)
+imp_region[0].im         = kernik_2019
+imp_region[0].num_IDs    = 1
+imp_region[0].ID         = 0
+imp_region[0].im_param   = "g_Na*1,g_K1*1.0,g_to*1.0,g_f*0,g_CaT*1.5,g_Kr*0.68,g_Ks*1.0,p_CaL*1"
+
+# Cardiomyocites 1&2 (out fibrosis)
+imp_region[1].im         = kernik_2019
+imp_region[1].num_IDs    = 2
+imp_region[1].ID         = 1 2
+imp_region[1].im_param   = "g_Na*1,g_K1*1.0,g_to*1.0,g_f*0,g_CaT*1.5,g_Kr*0.68,g_Ks*1.0,p_CaL*1"
+
+# fibrosis
+imp_region[2].im         = kernik_2019
+imp_region[2].num_IDs    = 1
+imp_region[2].ID         = 3
+imp_region[2].im_param   = "g_Na*0.0,g_K1*0.1,g_to*0.0,g_f*0,g_CaT*0.0,g_Kr*0.0,g_Ks*0.0,p_CaL*0.0"
+
+num_gregions             = 4
+# Cardiomyocites 0 (in fibrosis)
+gregion[0].num_IDs       = 1
+gregion[0].ID            = 0
+gregion[0].g_il          = 0.001855
+gregion[0].g_it          = 0.001855
+gregion[0].g_in          = 0.001855
+
+# Cardiomyocites 1 (out fibrosis)
+gregion[1].num_IDs       = 1
+gregion[1].ID            = 1
+gregion[1].g_il          = 0.025
+gregion[1].g_it          = 0.025
+gregion[1].g_in          = 0.025
+
+# Cardiomyocites 2 (out fibrosis)
+gregion[2].num_IDs       = 1
+gregion[2].ID            = 2
+gregion[2].g_il          = 0.0025
+gregion[2].g_it          = 0.0025
+gregion[2].g_in          = 0.0025
+
+# fibrosis
+gregion[3].num_IDs       = 1
+gregion[3].ID            = 3
+gregion[3].g_il          = 0.0000001
+gregion[3].g_it          = 0.0000001 
+gregion[3].g_in          = 0.0000001
+gregion[3].g_el          = 0.0000001
+gregion[3].g_et          = 0.0000001
+gregion[3].g_en          = 0.0000001
+
+num_stim                 = 1
+# Pacing times
+stim[0].ptcl.stimlist    = "0, 500,    995,   1485,   1970,   2450,   2925,   3395,   3860,   4320, 4775, 5225,   5670,   6110,   6545,   6975,   7400,   7820,   8235,   8645, 9050,   9450,   9845,  10235,  10620,  11000,  11375,  11745,  12110,  12470, 12825,  13175,  13520,  13860,  14195,  14525,  14850,  15170,  15485,  15795, 16100,  16400,  16695,  16985,  17270,  17550,  17825,  18095,  18360,  18620, 18875,  19125,  19370,  19610,  19845,  20075,  20300,  20520,  20735,  20945, 21150,  21350,  21545,  21735,  21920,  22100,  22275,  22445,  22610,  22770, 22925,  23075,  23220,  23360,  23495,  23625,  23750,  23870,  23985,  24095, 24200,  24300,  24395,  24485,  24570,  24650,  24725,  24795,  24860,  24920, 24975,  25025"
+stim[0].ptcl.duration    = 5
+stim[0].pulse.strength   = 800.0
+stim[0].crct.type        = 0
+stim[0].elec.geom_type   = 1
+stim[0].elec.radius      = 150.0
+# Stimulation node
+stim[0].elec.p0          = 500 9500 0

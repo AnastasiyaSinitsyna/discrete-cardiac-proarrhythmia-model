@@ -1,0 +1,80 @@
+# openCARP +F parameter.par 
+
+simID                    = control_monolayer_acute_obstacle_355ms
+meshname                 = monolayer_acute_obstacle
+
+num_external_imp=1
+external_imp = /discrete-cardiac-proarrhythmia-model/kernik_2019.so
+
+num_phys_regions         = 1
+phys_region[0].ptype     = 0
+phys_region[0].num_IDs   = 3
+phys_region[0].ID        = 0 1 2
+
+dt                       = 50
+timedt                   = 0.1
+spacedt                  = 10
+tend                     = 10000 
+#sentinel_ID             = 0
+experiment               = 0
+parab_solve              = 1
+mass_lumping             = 0
+bidm_eqv_mono            = 0
+
+num_imp_regions          = 3
+
+# Cardiomyocites 1
+imp_region[0].im         = kernik_2019
+imp_region[0].num_IDs    = 1
+imp_region[0].ID         = 0
+imp_region[0].im_param   = "g_Na*1.0,g_K1*1.0,g_to*1,g_f*0,g_CaT*1.5,g_Kr*1,g_Ks*1.0,p_CaL*1.0"
+
+# Cardiomyocites 2
+imp_region[1].im         = kernik_2019
+imp_region[1].num_IDs    = 1
+imp_region[1].ID         = 1
+imp_region[1].im_param   = "g_Na*1.0,g_K1*1.0,g_to*1,g_f*0,g_CaT*1.5,g_Kr*1,g_Ks*1.0,p_CaL*1.0"
+
+# Obstacle
+imp_region[2].im         = kernik_2019
+imp_region[2].num_IDs    = 1
+imp_region[2].ID         = 2
+imp_region[2].im_param   = "g_Na*0.0,g_K1*0.1,g_to*0,g_f*0,g_CaT*0.0,g_Kr*0.0,g_Ks*0.0"
+
+num_gregions             = 3
+
+# Cardiomyocites 1
+gregion[0].num_IDs       = 1
+gregion[0].ID            = 0
+gregion[0].g_il          = 0.025
+gregion[0].g_it          = 0.025
+gregion[0].g_in          = 0.025
+
+# Cardiomyocites 2
+gregion[1].num_IDs       = 1
+gregion[1].ID            = 1
+gregion[1].g_il          = 0.0025
+gregion[1].g_it          = 0.0025
+gregion[1].g_in          = 0.0025
+
+
+# Obstacle
+gregion[2].num_IDs       = 1
+gregion[2].ID            = 2
+gregion[2].g_il          = 0.0000001
+gregion[2].g_it          = 0.0000001
+gregion[2].g_in          = 0.0000001
+
+num_stim                 = 1
+
+# Pacing times
+stim[0].ptcl.stimlist    = "0, 355, 710, 1065, 1420, 1775, 2130, 2485, 2840, 3195, 3550, 3905, 4260, 4615, 4970, 5325, 5680, 6035, 6390, 6745, 7100, 7455, 7810, 8165, 8520, 8875, 9230, 9585, 9940, 10295, 10650"
+stim[0].ptcl.duration    = 5
+stim[0].pulse.strength   = 800.0
+stim[0].crct.type        = 0
+stim[0].elec.geom_type   = 1
+stim[0].elec.radius      = 200.0
+# Stimulation node
+stim[0].elec.p0          = -4200 -950 0
+
+
