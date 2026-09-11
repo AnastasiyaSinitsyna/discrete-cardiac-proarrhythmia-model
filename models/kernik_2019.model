@@ -1,0 +1,448 @@
+V; .nodal(); .external(Vm);
+Iion; .nodal(); .external();
+
+// geom
+Cm = 60.0;
+VSR_tenT = 1094.0;
+V_tot = 3960.0;
+Vc_tenT = 16404.0;
+
+V_SR = V_tot * (VSR_tenT / V_tot_tenT);
+V_tot_tenT = Vc_tenT + VSR_tenT;
+Vc = V_tot * (Vc_tenT / V_tot_tenT);
+
+// phys
+F = 9.6485e+01;
+R_2 = 8.314472;
+T = 310.0;
+
+FFRT = F * FRT;
+FRT = F / (R_2 * T);
+RTF = R_2 * T / F;
+
+// extra
+Cao = 1.8;
+Ko = 5.4;
+Nao = 140.0;
+
+Buf_C = 0.06;
+Kbuf_C = 0.0006;
+Kbuf_SR = 0.3;
+Buf_SR = 10.0 * 1.2;
+
+d1 = 12.966294;
+d2 = 7.079146;
+d5 = 0.044909416;
+d6 = -6.9098804;
+
+f1 = 0.00051258983;
+f2 = -49.505712;
+f5 = 1931.2112;
+f6 = 5.7300275;
+
+taud_const = 1.6582469;
+tauf_const = 100.46256;
+
+p_CaL = 0.30802769;
+p_CaL_shannonCa = 0.00054;
+p_CaL_shannonK = 2.7e-07;
+p_CaL_shannonNa = 1.5e-08;
+
+scale = 1.2;
+
+h1 = 0.0036265989;
+h2 = -19.839359;
+h5 = 9663.295;
+h6 = 7.3955036;
+m1 = 108.04585;
+m2 = 13.107016;
+m5 = 0.0023269144;
+m6 = -7.9177263;
+j1 = 0.00051225718;
+j2 = -66.583756;
+ina_tau_h_const = 0.16733150;
+ina_tau_j_const = 0.95108872;
+ina_tau_m_const = 0.03197758;
+
+g_Na = 9.7206134;
+KmCa = 1.38;
+KmNai = 87.5;
+Ksat = 0.1;
+inaca_alpha = 2.5 * 1.1;
+gamma = 0.35 * 2.0;
+kNaCa = 1000.0 * 1.1;
+Km_K = 1.0;
+Km_Na = 40.0;
+PNaK = 1.362 * 1.818;
+Kup = 0.00025 * 0.702;
+VmaxUp = 0.000425 * 0.26;
+V_leak = 8e-05 * 0.02;
+
+
+V_init = -75.596602;
+Ca_SR_init = 0.3350868;
+Cai_init = 0.00021919164;
+Nai_init = 7.1692809;
+Ki_init = 104.74882;
+d_1_init = 0.00039492534;
+f_1_init = 0.17099011;
+fCa_init = 0.87779895;
+Xr1_init = 0.30976749;
+Xr2_init = 0.45057719;
+Xs_init = 0.15378828;
+h_init = 0.73954361;
+j_init = 0.12451598;
+m_init = 0.029754996;
+s_init = 0.74680281;
+r_init = 0.00026759783;
+d_2_init = 0.00027019557;
+f_2_init = 0.75603290;
+Xf_init = 0.0064033850;
+R_1_init = 0.011312036;
+O_init = 0.00016504511;
+I_init = 0.014215362;
+
+// erev
+E_Ca = 0.5 * RTF * log(Cao / Cai);
+E_K = RTF * log(Ko / Ki);
+E_Na = RTF * log(Nao / Nai);
+
+// nai
+diff_Nai = -Cm / (F * Vc) * (i_Na + i_b_Na + i_fNa + 3.0 * i_NaK + 3.0 * i_NaCa + i_CaL_Na);
+
+// casr
+
+diff_Ca_SR = Ca_SR_bufSR * Vc / V_SR * (i_up - i_rel - i_leak);
+Ca_SR_bufSR = 1.0 / (1.0 + Buf_SR * Kbuf_SR / pow(Ca_SR + Kbuf_SR, 2.0));
+
+// ibca
+g_b_Ca = 0.000592 * 0.62;
+i_b_Ca = g_b_Ca * (V - E_Ca);
+
+// ibna
+g_b_Na = 0.00029 * 1.5;
+i_b_Na = g_b_Na * (V - E_Na);
+
+// cai
+
+diff_Cai = Cai_bufc * (-i_up + i_leak + i_rel - Cm / (2.0 * Vc * F) * (i_CaL_Ca + i_CaT + i_b_Ca + i_PCa - 2.0 * i_NaCa));
+Cai_bufc = 1.0 / (1.0 + Buf_C * Kbuf_C / pow(Cai + Kbuf_C, 2.0));
+
+
+// ical
+d3 = d5 * d1;
+d4 = 1.0 / (1.0 / d2 + 1.0 / d6);
+a_1 = d1 * exp(V / d2);
+b_1 = d3 * exp(V / d4);
+d_1_inf = a_1 / (a_1 + b_1);
+tau_d_1 = 1.0 / (a_1 + b_1) + taud_const;
+#!
+diff_d_1 = ((d_1_inf - d_1)/tau_d_1);
+
+f3 = f5 * f1;
+f4 = 1.0 / (1.0 / f2 + 1.0 / f6);
+a_2 = f1 * exp(V / f2);
+b_2 = f3 * exp(V / f4);
+f_1_inf = a_2 / (a_2 + b_2);
+tau_f_1 = 1.0 / (a_2 + b_2) + tauf_const;
+#!
+diff_f_1 = ((f_1_inf - f_1)/tau_f_1);
+
+fCa_inf_alpha_fCa = 1.0 / (1.0 + pow(scale * Cai / 0.000325, 8.0));
+fCa_inf_beta_fCa = 0.1 / (1.0 + exp((scale * Cai - 0.0005) / 0.0001));
+fCa_inf_gamma_fCa = 0.2 / (1.0 + exp((scale * Cai - 0.00075) / 0.0008));
+tau_fCa = 2.0;
+fCa_inf = (fCa_inf_alpha_fCa + fCa_inf_beta_fCa + fCa_inf_gamma_fCa + 0.23) / 1.46;
+k_fca = (((fCa_inf > fCa) and (V > -60.0)) ? 0.0 : 1.0);
+diff_fCa = k_fca * (fCa_inf - fCa) / tau_fCa;
+
+
+i_CaL = i_CaL_Ca + i_CaL_Na + i_CaL_K;
+i_CaL_Ca = ibarca * d_1 * f_1 * fCa;
+i_CaL_K = ibark * d_1 * f_1 * fCa;
+i_CaL_Na = ibarna * d_1 * f_1 * fCa;
+
+ibarca = p_CaL_Ca * 4.0 * V * FFRT * (0.341 * Cai * exp(2.0 * V * FRT) - 0.341 * Cao) / (expm1(2.0 * V * FRT));
+ibark = p_CaL_K * V * FFRT * (0.75 * Ki * exp(V * FRT) - 0.75 * Ko) / (expm1(V * FRT));
+ibarna = p_CaL_Na * V * FFRT * (0.75 * Nai * exp(V * FRT) - 0.75 * Nao) / (expm1(V * FRT));
+
+p_CaL_Ca = p_CaL_shannonCap * p_CaL;
+p_CaL_K = p_CaL_shannonKp * p_CaL;
+p_CaL_Na = p_CaL_shannonNap * p_CaL;
+
+p_CaL_shannonCap = p_CaL_shannonCa / p_CaL_shannonTot;
+p_CaL_shannonKp = p_CaL_shannonK / p_CaL_shannonTot;
+p_CaL_shannonNap = p_CaL_shannonNa / p_CaL_shannonTot;
+p_CaL_shannonTot = p_CaL_shannonCa + p_CaL_shannonNa + p_CaL_shannonK;
+
+
+// icat
+g_CaT = 0.185;
+d_2_inf = 1.0 / (1.0 + exp((V + 26.3) / -6.0));
+tau_d_2 = 1.0 / (1.068 * exp((V + 26.3) / 30.0) + 1.068 * exp((V + 26.3) / -30.0));
+diff_d_2 = ((d_2_inf - d_2)/tau_d_2);
+f_2_inf = 1.0 / (1.0 + exp((V + 61.7) / 5.6));
+tau_f_2 = 1.0 / (0.0153 * exp(-(V + 61.7) / 83.3) + 0.015 * exp((V + 61.7) / 15.38));
+#!
+diff_f_2 = ((f_2_inf - f_2)/tau_f_2);
+
+i_CaT = g_CaT * d_2 * f_2 * (V - E_Ca);
+
+
+// ifunny
+xF1 = 5.7897e-07;
+xF2 = -14.589712;
+xF5 = 20086.65;
+xF6 = 10.202353;
+xF_const = 23.945291;
+g_f = 0.0435;
+NatoK_ratio = 0.491;
+
+
+xF3 = xF5 * xF1;
+xF4 = 1.0 / (1.0 / xF2 + 1.0 / xF6);
+a_3 = xF1 * exp(V / xF2);
+b_3 = xF3 * exp(V / xF4);
+Xf_inf = a_3 / (a_3 + b_3);
+tau_Xf = 1.0 / (a_3 + b_3) + xF_const;
+diff_Xf = ((Xf_inf - Xf)/tau_Xf);
+
+Na_frac = NatoK_ratio / (NatoK_ratio + 1.0);
+
+i_fNa = Na_frac * g_f * Xf * (V - E_Na);
+i_fK = (1.0 - Na_frac) * g_f * Xf * (V - E_K);
+i_f = i_fNa + i_fK;
+
+// ik1
+xK11 = 0.47799497;
+xK12 = 27.242756;
+xK13 = 4.9250233;
+xK14 = 8.7222376;
+xK15 = 56.636197;
+g_K1 = 1.337e-01;
+
+a_4 = xK11 * exp((V + xK13) / xK12);
+b_4 = 1.0 * exp((V + xK15) / xK14);
+ik1_inf = a_4 / (a_4 + b_4);
+i_K1 = g_K1 * sqrt(Ko / 5.4) * ik1_inf * (V - E_K);
+
+// ikr
+Xr1_1 = 0.0057488524;
+Xr1_2 = 13.623493;
+Xr1_5 = 0.047630571;
+Xr1_6 = -7.0680874;
+Xr2_1 = 0.012456641;
+Xr2_2 = -25.994458;
+Xr2_5 = 37.342633;
+Xr2_6 = 22.091964;
+g_Kr = 0.218025;
+ikr_tau_1_offset = 50.0;
+ikr_tau_2_offset = 0.0;
+
+
+Xr1_3 = Xr1_5 * Xr1_1;
+Xr1_4 = 1.0 / (1.0 / Xr1_2 + 1.0 / Xr1_6);
+Xr2_3 = Xr2_5 * Xr2_1;
+Xr2_4 = 1.0 / (1.0 / Xr2_2 + 1.0 / Xr2_6);
+
+a_5 = Xr1_1 * exp(V / Xr1_2);
+b_5 = Xr1_3 * exp(V / Xr1_4);
+Xr1_inf = a_5 / (a_5 + b_5);
+tau_Xr1 = 1.0 / (a_5 + b_5) + ikr_tau_1_offset;
+
+#!
+diff_Xr1 = ((Xr1_inf - Xr1)/tau_Xr1);
+
+
+a_6 = Xr2_1 * exp(V / Xr2_2);
+b_6 = Xr2_3 * exp(V / Xr2_4);
+Xr2_inf = a_6 / (a_6 + b_6);
+tau_Xr2 = 1.0 / (a_6 + b_6) + ikr_tau_2_offset;
+
+#!
+diff_Xr2 = ((Xr2_inf - Xr2)/tau_Xr2);
+
+i_Kr = g_Kr * sqrt(Ko / 5.4) * Xr1 * Xr2 * (V - E_K);
+
+// iks
+g_Ks = 0.0077;
+ks1 = 0.0011655845;
+ks2 = 66726.839;
+ks5 = 0.28045891;
+ks6 = -18.866972;
+tauks_const = 4.74115e-06;
+
+a_7 = ks1 * exp(V / ks2);
+b_7 = ks3 * exp(V / ks4);
+Xs_inf = a_7 / (a_7 + b_7);
+tau_Xs = 1.0 / (a_7 + b_7) + tauks_const;
+
+
+ks3 = ks5 * ks1;
+ks4 = 1.0 / (1.0 / ks2 + 1.0 / ks6);
+
+#!
+diff_Xs = ((Xs_inf - Xs)/tau_Xs);
+i_Ks = g_Ks * pow(Xs, 2.0) * (V - E_K);
+
+
+// ileak
+
+i_leak = (Ca_SR - Cai) * V_leak;
+
+// ina
+
+a_8 = h1 * exp(V / h2);
+b_8 = h3 * exp(V / h4);
+h_inf = a_8 / (a_8 + b_8);
+tau_h = 1.0 / (a_8 + b_8) + ina_tau_h_const;
+
+h3 = h5 * h1;
+h4 = 1.0 / (1.0 / h2 + 1.0 / h6);
+
+i_Na = g_Na * pow(m, 3.0) * h * j * (V - E_Na);
+a_9 = j1 * exp(V / j2);
+b_9 = j3 * exp(V / j4);
+j_inf = a_9 / (a_9 + b_9);
+tau_j = 1.0 / (a_9 + b_9) + ina_tau_j_const;
+
+j3 = j5 * j1;
+j4 = 1.0 / (1.0 / j2 + 1.0 / j6);
+j5 = h5;
+j6 = h6;
+a_10 = m1 * exp(V / m2);
+b_10 = m3 * exp(V / m4);
+m_inf = a_10 / (a_10 + b_10);
+tau_m = 1.0 / (a_10 + b_10) + ina_tau_m_const;
+
+m3 = m5 * m1;
+m4 = 1.0 / (1.0 / m2 + 1.0 / m6);
+
+ 
+diff_h = ((h_inf - h)/tau_h);
+diff_j = ((j_inf - j)/tau_j);
+diff_m = ((m_inf - m)/tau_m);
+
+
+// inaca
+
+i_NaCa = kNaCa * (exp(gamma * V * FRT) * pow(Nai, 3.0) * Cao - exp((gamma - 1.0) * V * FRT) * pow(Nao, 3.0) * Cai * inaca_alpha) / ((pow(KmNai, 3.0) + pow(Nao, 3.0)) * (KmCa + Cao) * (1.0 + Ksat * exp((gamma - 1.0) * V * FRT)));
+
+
+// inak
+
+i_NaK = PNaK * Ko * Nai / ((Ko + Km_K) * (Nai + Km_Na) * (1.0 + 0.1245 * exp(-0.1 * V * FRT) + 0.0353 * exp(-V * FRT)));
+
+// ipca
+KPCa = 0.0005;
+g_PCa = 0.025 * 10.5;
+i_PCa = g_PCa * Cai / (Cai + KPCa);
+
+// irel
+diff_I = kiSRCa * Cai * O - kim * I - kom * I + koSRCa * pow(Cai, 2.0) * RI;
+MaxSR = 15.0;
+MinSR = 1.0;
+diff_O = koSRCa * pow(Cai, 2.0) * R_1 - kom * O - kiSRCa * Cai * O + kim * I;
+diff_R_1 = kim * RI - kiSRCa * Cai * R_1 - koSRCa * pow(Cai, 2.0) * R_1 + kom * O;
+RI = 1.0 - R_1 - O - I;
+ec50SR = 0.45;
+i_rel = ks * O * (Ca_SR - Cai) * (V_SR / Vc);
+kCaSR = MaxSR - (MaxSR - MinSR) / (1.0 + pow(ec50SR / Ca_SR, 2.5));
+kiCa = 54.0 * 0.3425;
+kiSRCa = kiCa * kCaSR;
+kim = 0.001 * 0.5571;
+koCa = 56320.0 * 11.43025;
+koSRCa = koCa / kCaSR;
+kom = 1.5 * 0.1429;
+ks = 12.5;
+
+// ito
+g_to = 1.1783e-01;
+r1 = 5.5361e-02;
+r2 = 1.1684e+01;
+s5 = 1.86760e+02;
+s6 = 8.18093e+00;
+r5 = 3.9891e+00;
+r6 = -1.1047e+01;
+s1 = 3.4423e-04;
+s2 = -1.76344e+01;
+ito_tau_r_const = 6.96758e-01;
+ito_tau_s_const = 1.12244e+01;
+
+r3 = r5 * r1;
+r4 = 1.0 / (1.0 / r2 + 1.0 / r6);
+s3 = s5 * s1;
+s4 = 1.0 / (1.0 / s2 + 1.0 / s6);
+
+a_11 = r1 * exp(V / r2);
+b_11 = r3 * exp(V / r4);
+r_inf = a_11 / (a_11 + b_11);
+tau_r = 1.0 / (a_11 + b_11) + ito_tau_r_const;
+
+a_12 = s1 * exp(V / s2);
+b_12 = s3 * exp(V / s4);
+s_inf = a_12 / (a_12 + b_12);
+tau_s = 1.0 / (a_12 + b_12) + ito_tau_s_const;
+
+i_to = g_to * r * s * (V - E_K);
+
+
+diff_s = ((s_inf - s)/tau_s);
+diff_r = ((r_inf - r)/tau_r);
+ 
+// iup
+i_up = VmaxUp / (1.0 + pow(Kup, 2.0) / pow(Cai, 2.0));
+
+// ki
+diff_Ki = -Cm / (F * Vc) * (i_K1 + i_to + i_Kr + i_Ks + i_fK - 2.0 * i_NaK + i_CaL_K);
+
+// membrane
+Iion = i_K1 + i_to + i_Kr + i_Ks + i_CaL + i_CaT + i_NaK + i_Na + i_NaCa + i_PCa + i_f + i_b_Na + i_b_Ca;
+
+
+
+group {
+     V;
+     Iion;
+}.trace();
+
+group {
+     g_Na;
+     g_f;
+     g_to;
+     g_Ks;
+     g_Kr;
+     g_CaT;
+     g_K1;
+     g_b_Ca;
+     p_CaL;
+     kNaCa;
+     V_SR;
+     Vc;
+     VmaxUp;
+} .param();
+
+
+group {
+    Ca_SR;
+    Cai;
+    Nai;
+    Ki;
+    d_1;
+    f_1;
+    fCa;
+    Xr1;
+    Xr2;
+    Xs;
+    m;
+    h;
+    j;
+    Xf;
+    r;
+    s;
+    d_2;
+    f_2;
+    R_1;
+    O;
+    I;
+}.method(rush_larsen);
