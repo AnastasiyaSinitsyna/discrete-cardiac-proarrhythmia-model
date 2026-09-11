@@ -25,6 +25,9 @@ discrete-cardiac-proarrhythmia-model/
 │       ├── monolayer_diffuse_fibrosis.elem
 │       ├── monolayer_diffuse_fibrosis.pts
 │       └── monolayer_diffuse_fibrosis.lon
+├── models/
+│   ├── kernik_2019.model
+│   └── kernik_2019.mmt
 ├── parameters/
 │   ├── control/
 │   │   └── parameter_acute_obstacle.par
